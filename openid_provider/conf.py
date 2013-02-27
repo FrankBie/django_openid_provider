@@ -17,3 +17,10 @@ AX_DATA_CALLBACK = getattr(settings, 'OPENID_PROVIDER_AX_DATA_CALLBACK',
                            'openid_provider.utils.get_default_ax_data')
 
 AX_EXTENSION = getattr(settings, 'OPENID_PROVIDER_AX_EXTENSION', False)
+
+# restrict the allowed trusted sites consumers
+# via settings and callable code
+TRUSTED_SITES_CALLBACK = getattr(settings, 'OPENID_PROVIDER_TRUSTED_SITES_CALLBACK',
+                           'openid_provider.utils.is_trusted_site_calculation_default')
+
+TRUSTED_SITES_CALLBACK_ENABLED = getattr(settings, 'OPENID_PROVIDER_TRUSTED_SITES_CALLBACK_ENABLED', False)

@@ -30,6 +30,7 @@ from openid.yadis.constants import YADIS_CONTENT_TYPE
 
 from openid_provider import conf
 from openid_provider.utils import add_sreg_data, add_ax_data, get_store
+from openid_provider.utils import is_trusted_site
 
 @csrf_exempt
 def openid_server(request):
@@ -122,6 +123,9 @@ def openid_decide(request):
     openid = openid_get_identity(request, orequest.identity)
     if openid is None:
         return error_page(request, "You are signed in but you don't have OpenID here!")
+    # restrict sites
+    if hasattr(conf, 'TRUSTED_SITES_CALLBACK_ENABLED') and not is_trusted_site(request,orequest):
+       return error_page(request, "OpenID verification has been requested by restricted site.")
 
     if request.method == 'POST' and request.POST.get('decide_page', False):
         openid.trustedroot_set.create(trust_root=orequest.trust_root)

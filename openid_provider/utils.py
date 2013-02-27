@@ -72,3 +72,21 @@ def get_store(request):
     if conf.STORE == 'openid.store.filestore.FileOpenIDStore':
         return store_class(conf.FILESTORE_PATH)
     return store_class()
+
+def get_is_trusted_site_callback():
+    try:
+        return import_module_attr(conf.TRUSTED_SITES_CALLBACK)
+    except (ImportError, AttributeError):
+        return None
+    
+def is_trusted_site_calculation_default(request, orequest):
+    return True
+
+def is_trusted_site(request, orequest):
+    callback = get_is_trusted_site_callback()
+    if callback is None or not callable(callback):
+        raise ImproperlyConfigured("failed to load %s" % conf.TRUSTED_SITES_CALLBACK)
+        return
+    result = callback(request, orequest)
+    return result
+    
